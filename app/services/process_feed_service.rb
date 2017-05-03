@@ -120,7 +120,8 @@ class ProcessFeedService < BaseService
         created_at: published(entry),
         reply: thread?(entry),
         language: content_language(entry),
-        visibility: visibility_scope(entry)
+        visibility: visibility_scope(entry),
+        extra: extra(entry)
       )
 
       if thread?(entry)
@@ -249,6 +250,15 @@ class ProcessFeedService < BaseService
 
     def visibility_scope(xml = @xml)
       xml.at_xpath('./mastodon:scope', mastodon: TagManager::MTDN_XMLNS)&.content&.to_sym || :public
+    end
+
+    def extra(xml = @xml)
+      content = xml.at_xpath('./mastodon:extra', mastodon: TagManager::MTDN_XMLNS)&.content
+      if content.present?
+        JSON.parse(content)
+      else
+        {}
+      end
     end
 
     def published(xml = @xml)

@@ -351,5 +351,6 @@ class AtomSerializer
     end
 
     append_element(entry, 'mastodon:scope', status.visibility)
+    append_element(entry, 'mastodon:extra', status.extra.to_json)
   end
 end
